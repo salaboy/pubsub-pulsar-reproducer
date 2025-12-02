@@ -40,14 +40,14 @@ config:
       traces:
         receivers: [otlp]
         processors: [batch]
-        exporters: [otlp/jaeger, otlp/dash0]
+        exporters: [otlp/jaeger]
 
       metrics:
         receivers: [otlp]
         processors: [batch]
-        exporters: [otlp/dash0]
+
 
       logs:
         receivers: [otlp]
         processors: [batch]
-        exporters: [otlp/dash0]
+
