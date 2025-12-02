@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+spec:
+  selector:
+    matchLabels:
+      app: app-service
+  template:
+    metadata:
+      annotations:  
+        dapr.io/app-id: app-store
+        dapr.io/app-port: "8080"
+        dapr.io/enabled: "true"
+        dapr.io/log-level: "debug"
+        dapr.io/config: "tracing"
+        #dapr.io/sidecar-image: kaspernissen/daprd:stable-v1-linux-arm64
+        dapr.io/env: "OTEL_SERVICE_NAME=app-daprd"
+        instrumentation.opentelemetry.io/inject-java: "opentelemetry/instrumentation" 
+      labels:
+        app: app-service
+        app.kubernetes.io/name: app-service
+        app.kubernetes.io/part-of: app-service
+        app.kubernetes.io/version: 0.1.0
+    spec:
+      containers:
+      - name: app-service
+        image: salaboy/pubsub-pulsar-reproducer:0.0.1
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+        resources:
+          limits:
+            cpu: "1"
+            memory: "2Gi"
+          requests:
+            cpu: "1"
+            memory: "2Gi"
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc
+spec:
+  selector:
+    app: app-service
+  ports:
+  - port: 80
+    targetPort: 8080
