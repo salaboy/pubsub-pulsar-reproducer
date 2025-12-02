@@ -10,7 +10,9 @@ spec:
     metadata:
       annotations:  
         dapr.io/app-id: app-store
-        dapr.io/app-port: "8080"
+        #dapr.io/app-port: "8080" #http port
+        dapr.io/app-port: "3000"
+        dapr.io/app-protocol: grpc
         dapr.io/enabled: "true"
         dapr.io/log-level: "debug"
         dapr.io/config: "tracing"
@@ -25,7 +27,7 @@ spec:
     spec:
       containers:
       - name: app-service
-        image: salaboy/pubsub-pulsar-reproducer:0.0.1
+        image: salaboy/pubsub-pulsar-reproducer:0.0.7
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
